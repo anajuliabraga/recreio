@@ -1,0 +1,1571 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Recreio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="brand">
+      <span class="name">Recreio</span>
+      <span class="tag">seu intervalo de inglês</span>
+    </div>
+    <div class="streak-chip" id="streakChip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1 4-3 5-3 9a3 3 0 0 0 6 0c0-1-.5-2-1-2 1.5 2 2 3.5 2 5a5 5 0 0 1-10 0c0-5 4-6 4-11 1 0 2 0 2-1z"/></svg>
+      <span id="streakNum">0</span>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="view active" id="view-hoje">
+      <p class="greeting" id="greeting">Olá</p>
+      <p class="view-sub" id="hojeDate">carregando...</p>
+
+      <div class="goal-row">
+        <span style="font-size:.86rem;">Seu objetivo: <strong id="goalMinutesLbl">30 min</strong></span>
+        <span class="goal-num" id="goalProgressLbl">0 min</span>
+      </div>
+      <div class="progress-track" style="margin-bottom:6px;"><div class="progress-fill" id="goalProgressFill" style="width:0%;"></div></div>
+
+      <div id="planBlocks" class="card" style="margin-top:10px;">
+        <div class="skel" style="height:60px;"></div>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="startStudyBtn" style="margin-top:14px;">Começar meu estudo</button>
+
+      <div class="why-box" id="whyBox" style="display:none;">
+        <p class="why-q">Por que isso hoje?</p>
+        <p class="why-a" id="whyText"></p>
+      </div>
+
+      <div class="card" style="margin-top:16px;" id="todayScheduleCard">
+        <div class="skel" style="height:50px;"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-praticar">
+      <h2 class="view-title">Praticar</h2>
+      <p class="view-sub">Vocabulário, conversação e compreensão — o núcleo da sua fluência.</p>
+
+      <div class="subnav" id="praticarSubnav">
+        <button class="subnav-btn active" data-sub="cards">Cards</button>
+        <button class="subnav-btn" data-sub="speaking">Speaking</button>
+        <button class="subnav-btn" data-sub="listening">Listening</button>
+      </div>
+
+      <div class="subview active" id="sub-cards">
+        <div id="deckList" class="stack"><div class="skel" style="height:64px;"></div></div>
+
+        <div id="studyArea" style="display:none; margin-top:8px;">
+          <div class="study-wrap">
+            <div style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+              <button class="btn btn-ghost" id="exitStudyBtn" style="padding:8px 12px;">← Voltar</button>
+              <span class="deck-sub" id="studyCounter">0 / 0</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" id="studyProgress" style="width:0%;"></div></div>
+            <div class="flip-card" id="flipCard">
+              <div class="flip-inner">
+                <div class="flip-face flip-front">
+                  <span class="kicker">Inglês</span>
+                  <span class="word" id="cardFront">—</span>
+                  <p class="flip-example" id="cardExample" style="display:none; font-size:.8rem; font-weight:400; color:var(--ink-soft); margin:8px 0 0; text-wrap:balance;"></p>
+                  <button class="icon-btn" id="cardSpeakBtn" style="margin-top:10px;" aria-label="ouvir pronúncia" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>
+                  </button>
+                  <span class="flip-hint">toque na palavra pra virar</span>
+                </div>
+                <div class="flip-face flip-back">
+                  <span class="kicker">Português</span>
+                  <span class="word" id="cardBack">—</span>
+                </div>
+              </div>
+            </div>
+            <div class="rate-row" id="rateRow" style="visibility:hidden;">
+              <button class="btn rate-btn rate-again" data-rate="again">De novo<small>hoje</small></button>
+              <button class="btn rate-btn rate-good" data-rate="good">Bom<small id="goodDays">+d</small></button>
+              <button class="btn rate-btn rate-easy" data-rate="easy">Fácil<small id="easyDays">+d</small></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subview" id="sub-speaking">
+        <div id="speakingSetup">
+          <p class="field-label">Contexto</p>
+          <div class="chip-row" id="speakContextChips"></div>
+          <p class="field-label">Nível</p>
+          <div class="chip-row" id="speakLevelChips"></div>
+          <p class="field-label">Duração</p>
+          <div class="chip-row" id="speakDurationChips"></div>
+          <button class="btn btn-primary btn-full" id="speakStartBtn" style="margin-top:18px;">Começar conversa</button>
+          <p class="view-sub" style="margin-top:10px;">A IA não vai te corrigir a cada erro — o objetivo é conversar naturalmente. A análise vem no final.</p>
+        </div>
+
+        <div id="speakingChatArea" style="display:none;">
+          <div class="chat-wrap" id="chatMessages"></div>
+          <div class="chat-input-row">
+            <input type="text" id="speakInput" placeholder="Digite sua resposta em inglês...">
+            <button class="btn btn-primary" id="speakSendBtn" style="padding:10px 16px;">Enviar</button>
+          </div>
+          <button class="btn btn-ghost btn-full" id="speakEndBtn" style="margin-top:10px;">Encerrar e ver análise</button>
+        </div>
+
+        <div id="speakingResult" style="display:none;"></div>
+      </div>
+
+      <div class="subview" id="sub-listening">
+        <div id="listeningSetup">
+          <p class="field-label">Contexto</p>
+          <div class="chip-row" id="listenContextChips"></div>
+          <p class="field-label">Nível</p>
+          <div class="chip-row" id="listenLevelChips"></div>
+          <button class="btn btn-primary btn-full" id="listenGenBtn" style="margin-top:18px;">Gerar exercício</button>
+        </div>
+        <div id="listeningArea" style="display:none;"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-erros">
+      <h2 class="view-title">Meus Erros</h2>
+      <p class="view-sub">Os mesmos erros de sempre, um de cada vez — o que aparece mais aqui é o que vale mais a pena praticar.</p>
+      <div id="mistakesList" class="stack"><div class="skel" style="height:64px;"></div></div>
+    </section>
+
+    <section class="view" id="view-progresso">
+      <h2 class="view-title">Progresso</h2>
+      <p class="view-sub">A prova de que está funcionando é constância, não perfeição.</p>
+
+      <div class="level-hero">
+        <span class="lh-lbl">English Level</span>
+        <div class="lh-num" id="englishLevelNum">—</div>
+        <p class="lh-cap" id="englishLevelCap">Ainda não avaliado</p>
+      </div>
+
+      <div class="skill-grid" id="skillGrid"></div>
+      <div class="insight-row" id="insightRow"></div>
+
+      <div class="card" id="nextGoalCard" style="margin-top:14px; display:none;">
+        <span style="font-weight:700; font-size:.86rem;">Seu próximo objetivo</span>
+        <p class="view-sub" style="margin:6px 0 0;" id="nextGoalText"></p>
+        <ul class="goal-list" id="nextGoalList"></ul>
+      </div>
+
+      <div class="stat-grid" id="statTiles" style="margin-top:16px;">
+        <div class="stat-tile"><div class="skel" style="height:40px;"></div></div>
+        <div class="stat-tile"><div class="skel" style="height:40px;"></div></div>
+        <div class="stat-tile"><div class="skel" style="height:40px;"></div></div>
+        <div class="stat-tile"><div class="skel" style="height:40px;"></div></div>
+      </div>
+      <div class="card">
+        <span style="font-weight:700; font-size:.86rem;">Cronograma por semana</span>
+        <div id="weekBars" style="margin-top:6px;"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-mais">
+      <h2 class="view-title">Mais</h2>
+      <div class="subnav" id="maisSubnav">
+        <button class="subnav-btn active" data-sub="cronograma">Cronograma</button>
+        <button class="subnav-btn" data-sub="foco">Foco</button>
+      </div>
+
+      <div class="subview active" id="sub-cronograma">
+        <p class="view-sub">09/09 a 09/10 — 2 Class + 2 Real English por semana, no seu intervalo do trabalho.</p>
+        <div id="scheduleList"><div class="skel" style="height:200px;"></div></div>
+      </div>
+
+      <div class="subview" id="sub-foco">
+        <p class="view-sub">O método Pomodoro: blocos curtos de foco total, intercalados com pausas. É uma ferramenta auxiliar — o núcleo da sua prática é a aba Praticar.</p>
+
+        <div class="timer-wrap">
+          <div class="mode-row">
+            <span class="mode-pill" id="modePill">Foco</span>
+            <span class="cycle-label" id="cycleLabel">Ciclo 1/4</span>
+          </div>
+          <div class="timer-presets" id="timerPresets">
+            <button class="preset-btn" data-min="15">15 min</button>
+            <button class="preset-btn" data-min="20">20 min</button>
+            <button class="preset-btn active" data-min="25">25 min</button>
+          </div>
+          <div class="timer-face" id="timerFace">25:00</div>
+          <p class="timer-hint" id="timerHint">Pausa curta de 5 min depois — pausa longa de 15 min a cada 4 ciclos.</p>
+          <div class="timer-controls">
+            <button class="btn btn-ghost" id="timerReset">Reiniciar</button>
+            <button class="btn btn-primary" id="timerToggle">Começar</button>
+          </div>
+        </div>
+
+        <p class="view-sub" style="margin-bottom:10px; font-weight:700; color:var(--ink);">Playlist de estudo</p>
+        <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4FyS8kM?utm_source=generator&si=21670f26277f402b" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tabbar">
+    <button class="tab-btn active" data-view="hoje">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      Hoje
+    </button>
+    <button class="tab-btn" data-view="praticar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+      Praticar
+    </button>
+    <button class="tab-btn" data-view="erros">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+      Erros
+    </button>
+    <button class="tab-btn" data-view="progresso">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+      Progresso
+    </button>
+    <button class="tab-btn" data-view="mais">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+      Mais
+    </button>
+  </nav>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var db = null;
+  var sampleFn = null;
+  var cardsById = {};
+  var scheduleById = {};
+  var stats = { streak:0, lastActiveDate:null, totalReviews:0 };
+  var statsDocRef = null;
+  var BOX_INTERVALS = [0,1,3,7,16,35]; // days until next review, index = box
+
+  var activitiesToday = [];
+  var activitiesRecent = [];
+  var mistakesById = {};
+  var settings = { dailyGoalMinutes: 30 };
+  var todayPlanDoc = null;
+  var todayPlanRef = null;
+  var planGenerationInFlight = false;
+
+  function todayISO(d){
+    d = d || new Date();
+    var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+    return y+'-'+m+'-'+day;
+  }
+  function addDaysISO(iso, days){
+    var d = new Date(iso+'T00:00:00');
+    d.setDate(d.getDate()+days);
+    return todayISO(d);
+  }
+  function isBeforeOrEqual(a,b){ return a <= b; }
+
+  var WEEKDAY_PT = ['dom','seg','ter','qua','qui','sex','sáb'];
+  function fmtDate(iso){
+    var d = new Date(iso+'T00:00:00');
+    return WEEKDAY_PT[d.getDay()] + ' ' + iso.slice(8,10) + '/' + iso.slice(5,7);
+  }
+  var TODAY = todayISO();
+
+  var TYPE_LABEL = {
+    class:'Class', real_english:'Real English', review:'Review', mixed:'Class + R.E.',
+    free:'Livre', off:'Folga', buffer:'Buffer'
+  };
+  var BLOCK_NAME = { vocabulary:'Vocabulary', speaking:'Speaking', listening:'Listening', writing:'Writing' };
+  var BLOCK_ICON = {
+    vocabulary:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="6" width="16" height="12" rx="2"/></svg>',
+    speaking:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v11H8l-4 4V4z"/></svg>',
+    listening:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>',
+    writing:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M6 16l10-10 2 2-10 10H6v-2z"/></svg>'
+  };
+  var CATEGORY_LABEL = { grammar:'Grammar', vocabulary:'Vocabulary', prepositions:'Prepositions', word_choice:'Word choice', naturalness:'Naturalness', pronunciation:'Pronunciation' };
+  var SKILL_LABEL = { speaking:'Speaking', listening:'Listening', reading:'Reading', writing:'Writing', vocabulary:'Vocabulary', grammar:'Grammar' };
+  var CONTEXTS = ['Casual conversation','Travel','Work','Airport','Meeting','Client','Presentation','Daily life','Job interview'];
+  var LEVELS = ['A1','A2','B1','B2','C1'];
+  var DURATIONS = ['5 min','10 min','15 min'];
+
+  function escapeHtml(s){
+    return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function slugify(s){
+    return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+      .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,48) || 'x';
+  }
+  function speakEnglish(text, rate){
+    try{
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = rate || 1;
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+
+  // ---------- tabs ----------
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('view-'+btn.dataset.view).classList.add('active');
+      document.getElementById('main').scrollTop = 0;
+    });
+  });
+  function goToView(name){
+    document.querySelector('.tab-btn[data-view="'+name+'"]').click();
+  }
+  function wireSubnav(navId){
+    var nav = document.getElementById(navId);
+    if(!nav) return;
+    var scope = nav.parentElement;
+    nav.addEventListener('click', function(e){
+      var btn = e.target.closest('.subnav-btn');
+      if(!btn) return;
+      nav.querySelectorAll('.subnav-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      scope.querySelectorAll('.subview').forEach(function(v){ v.classList.remove('active'); });
+      document.getElementById('sub-'+btn.dataset.sub).classList.add('active');
+    });
+  }
+  wireSubnav('praticarSubnav');
+  wireSubnav('maisSubnav');
+  function switchSub(navId, subName){
+    var nav = document.getElementById(navId);
+    if(!nav) return;
+    var btn = nav.querySelector('.subnav-btn[data-sub="'+subName+'"]');
+    if(btn) btn.click();
+  }
+
+  // ---------- chips (Speaking / Listening setup) ----------
+  var speakState = { context:CONTEXTS[0], level:'B1', durationMin:10, transcript:[], startedAt:0 };
+  var listenState = { context:'Daily life', level:'B1', exercise:null, stage:1, answers:{} };
+
+  function renderChipGroup(containerId, options, selected, onSelect){
+    var el = document.getElementById(containerId);
+    if(!el) return;
+    el.innerHTML = options.map(function(opt){
+      return '<button type="button" class="chip-btn'+(opt===selected?' active':'')+'" data-val="'+escapeHtml(opt)+'">'+escapeHtml(opt)+'</button>';
+    }).join('');
+    el.onclick = function(e){
+      var btn = e.target.closest('.chip-btn');
+      if(!btn) return;
+      el.querySelectorAll('.chip-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      onSelect(btn.dataset.val);
+    };
+  }
+  renderChipGroup('speakContextChips', CONTEXTS, speakState.context, function(v){ speakState.context=v; });
+  renderChipGroup('speakLevelChips', LEVELS, speakState.level, function(v){ speakState.level=v; });
+  renderChipGroup('speakDurationChips', DURATIONS, speakState.durationMin+' min', function(v){ speakState.durationMin=parseInt(v,10); });
+  renderChipGroup('listenContextChips', CONTEXTS, listenState.context, function(v){ listenState.context=v; });
+  renderChipGroup('listenLevelChips', LEVELS, listenState.level, function(v){ listenState.level=v; });
+
+  // ---------- rendering: Hoje ----------
+  document.getElementById('hojeDate').textContent = fmtDate(TODAY).replace(/^\w/, function(c){return c.toUpperCase();});
+  function greetingWord(){
+    var h = new Date().getHours();
+    if(h<12) return 'Bom dia';
+    if(h<18) return 'Boa tarde';
+    return 'Boa noite';
+  }
+  document.getElementById('greeting').textContent = greetingWord()+', Ana';
+
+  function renderHoje(){
+    var goal = settings.dailyGoalMinutes || 30;
+    document.getElementById('goalMinutesLbl').textContent = goal+' min';
+    var blocksEl = document.getElementById('planBlocks');
+
+    if(!todayPlanDoc){
+      blocksEl.innerHTML = '<div class="skel" style="height:60px;"></div>';
+      document.getElementById('goalProgressLbl').textContent = '0 / '+goal+' min';
+      document.getElementById('goalProgressFill').style.width = '0%';
+      document.getElementById('whyBox').style.display = 'none';
+      renderTodayScheduleCard();
+      return;
+    }
+
+    var doneTypeMinutes = {};
+    activitiesToday.forEach(function(a){ doneTypeMinutes[a.type] = (doneTypeMinutes[a.type]||0) + (a.durationMin||0); });
+
+    var doneMinutes = 0;
+    var blocks = todayPlanDoc.blocks.map(function(b){
+      var doneMin = doneTypeMinutes[b.type] || 0;
+      var isDone = doneMin > 0;
+      if(isDone) doneMinutes += Math.min(doneMin, b.minutes);
+      return Object.assign({}, b, { done:isDone });
+    });
+
+    blocksEl.innerHTML = blocks.map(function(b){
+      return '<div class="plan-block'+(b.done?' is-done':'')+'">' +
+        '<span class="pb-min">'+b.minutes+'′</span>' +
+        '<div class="pb-icon">'+(BLOCK_ICON[b.type]||'')+'</div>' +
+        '<div class="pb-info"><div class="pb-name">'+(BLOCK_NAME[b.type]||b.type)+'</div></div>' +
+        (b.done ? '<span class="pill" style="color:var(--good); border-color:var(--good);">✓</span>' : '<button class="btn btn-ghost" data-goto-block="'+b.type+'" style="padding:6px 12px; font-size:.76rem;">Começar</button>') +
+      '</div>';
+    }).join('');
+    blocksEl.querySelectorAll('[data-goto-block]').forEach(function(btn){
+      btn.addEventListener('click', function(){ goToBlock(btn.dataset.gotoBlock); });
+    });
+
+    document.getElementById('goalProgressLbl').textContent = Math.min(doneMinutes, goal)+' / '+goal+' min';
+    document.getElementById('goalProgressFill').style.width = Math.min(100, Math.round((doneMinutes/goal)*100))+'%';
+
+    var firstPending = blocks.find(function(b){ return !b.done; });
+    var whyTarget = firstPending || blocks[0];
+    if(whyTarget && whyTarget.reason){
+      document.getElementById('whyBox').style.display = 'block';
+      document.getElementById('whyText').textContent = whyTarget.reason;
+    } else {
+      document.getElementById('whyBox').style.display = 'none';
+    }
+
+    renderTodayScheduleCard();
+  }
+
+  function goToBlock(type){
+    if(type==='vocabulary'){
+      goToView('praticar'); switchSub('praticarSubnav','cards');
+      if(dueCards().length) startStudy();
+    } else if(type==='speaking'){
+      goToView('praticar'); switchSub('praticarSubnav','speaking');
+    } else if(type==='listening'){
+      goToView('praticar'); switchSub('praticarSubnav','listening');
+    } else if(type==='writing'){
+      alert('Writing chega em breve no Recreio.');
+    }
+  }
+  document.getElementById('startStudyBtn').addEventListener('click', function(){
+    if(!todayPlanDoc) return;
+    var next = todayPlanDoc.blocks.find(function(b){
+      var doneMin = activitiesToday.filter(function(a){ return a.type===b.type; })
+        .reduce(function(s,a){ return s+(a.durationMin||0); },0);
+      return doneMin===0;
+    }) || todayPlanDoc.blocks[0];
+    if(next) goToBlock(next.type);
+  });
+
+  function renderTodayScheduleCard(){
+    var today = scheduleById[TODAY];
+    var el = document.getElementById('todayScheduleCard');
+    if(!el) return;
+    if(!today){
+      el.innerHTML = '<span style="font-weight:700; font-size:.86rem;">Curso de hoje</span><p class="view-sub" style="margin:6px 0 0;">Sem sessão do curso hoje — aproveite pra descansar ou fazer catch-up.</p>';
+      return;
+    }
+    var doneBtn = today.done
+      ? '<button class="btn btn-done" id="toggleTodayBtn" style="margin-top:10px;">✓ Concluído</button>'
+      : '<button class="btn btn-primary" id="toggleTodayBtn" style="margin-top:10px;">Marcar concluído</button>';
+    el.innerHTML =
+      '<div style="display:flex; align-items:center; justify-content:space-between; gap:8px;"><span style="font-weight:700; font-size:.86rem;">Curso de hoje</span><span class="pill type-'+today.type+'">'+(TYPE_LABEL[today.type]||today.type)+'</span></div>' +
+      '<p class="view-sub" style="margin:6px 0 0;">'+today.label+'</p>' + doneBtn;
+    var tb = document.getElementById('toggleTodayBtn');
+    if(tb) tb.addEventListener('click', function(){ toggleScheduleDone(TODAY); });
+  }
+
+  function toggleScheduleDone(dateISO){
+    if(!db) return;
+    var entry = scheduleById[dateISO];
+    if(!entry) return;
+    var newDone = !entry.done;
+    db.collection('schedule').doc(dateISO).update({ done:newDone }).catch(function(){});
+    if(newDone) touchStreak(false);
+  }
+
+  // ---------- due cards ----------
+  function dueCards(){
+    return Object.keys(cardsById).map(function(id){ return cardsById[id]; })
+      .filter(function(c){ return isBeforeOrEqual(c.nextReview, TODAY); })
+      .sort(function(a,b){ return a.nextReview < b.nextReview ? -1 : 1; });
+  }
+
+  // ---------- rendering: deck list ----------
+  function renderDecks(){
+    var decks = {};
+    Object.keys(cardsById).forEach(function(id){
+      var c = cardsById[id];
+      decks[c.deck] = decks[c.deck] || { name:c.deckName||c.deck, total:0, due:0, mastered:0 };
+      decks[c.deck].total++;
+      if(isBeforeOrEqual(c.nextReview, TODAY)) decks[c.deck].due++;
+      if(c.box>=5) decks[c.deck].mastered++;
+    });
+    var list = document.getElementById('deckList');
+    var keys = Object.keys(decks);
+    if(keys.length===0){
+      list.innerHTML = '<div class="empty-state"><span class="big">🗂️</span><p>Nenhum baralho ainda.</p></div>';
+      return;
+    }
+    list.innerHTML = keys.map(function(k){
+      var d = decks[k];
+      return '<div class="deck-row">' +
+        '<div><div class="deck-name">'+d.name+'</div><div class="deck-sub">'+d.total+' cartões · '+d.mastered+' dominados</div></div>' +
+        '<button class="btn '+(d.due>0?'btn-primary':'btn-ghost')+'" data-deck="'+k+'" '+(d.due===0?'disabled':'')+'>'+(d.due>0? d.due+' pra revisar' : 'em dia')+'</button>' +
+      '</div>';
+    }).join('');
+    list.querySelectorAll('button[data-deck]').forEach(function(btn){
+      btn.addEventListener('click', function(){ startStudy(btn.dataset.deck); });
+    });
+  }
+
+  // ---------- study session ----------
+  var session = { queue:[], index:0, flipped:false, startedAt:0, reviewed:0 };
+  function startStudy(deckFilter){
+    var due = dueCards();
+    if(deckFilter) due = due.filter(function(c){ return c.deck===deckFilter; });
+    if(due.length===0) return;
+    session.queue = due;
+    session.index = 0;
+    session.startedAt = Date.now();
+    session.reviewed = 0;
+    document.getElementById('deckList').style.display='none';
+    document.getElementById('studyArea').style.display='block';
+    showCurrentCard();
+  }
+  function endStudy(){
+    document.getElementById('deckList').style.display='';
+    document.getElementById('studyArea').style.display='none';
+    if(session.reviewed>0){
+      var minutes = Math.max(1, Math.round((Date.now()-session.startedAt)/60000));
+      logActivity('vocabulary', minutes, null, { reviewed:session.reviewed });
+    }
+    renderDecks();
+    renderHoje();
+  }
+  document.getElementById('exitStudyBtn').addEventListener('click', endStudy);
+
+  function showCurrentCard(){
+    var flip = document.getElementById('flipCard');
+    flip.classList.remove('flipped');
+    document.getElementById('rateRow').style.visibility='hidden';
+    var c = session.queue[session.index];
+    document.getElementById('cardFront').textContent = c.front;
+    document.getElementById('cardBack').textContent = c.back;
+    var exampleEl = document.getElementById('cardExample');
+    if(c.example){ exampleEl.textContent = c.example; exampleEl.style.display='block'; }
+    else { exampleEl.style.display='none'; }
+    document.getElementById('studyCounter').textContent = (session.index+1)+' / '+session.queue.length;
+    document.getElementById('studyProgress').style.width = Math.round((session.index/session.queue.length)*100)+'%';
+    document.getElementById('goodDays').textContent = '+'+BOX_INTERVALS[Math.min(c.box+1,5)]+'d';
+    document.getElementById('easyDays').textContent = '+'+BOX_INTERVALS[Math.min(c.box+2,5)]+'d';
+  }
+  document.getElementById('flipCard').addEventListener('click', function(){
+    this.classList.toggle('flipped');
+    document.getElementById('rateRow').style.visibility = this.classList.contains('flipped') ? 'visible' : 'hidden';
+  });
+  document.getElementById('cardSpeakBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    var c = session.queue[session.index];
+    if(c) speakEnglish(c.front);
+  });
+  document.getElementById('rateRow').addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-rate]');
+    if(!btn) return;
+    var rate = btn.dataset.rate;
+    var c = session.queue[session.index];
+    var newBox = c.box;
+    if(rate==='again') newBox = 0;
+    else if(rate==='good') newBox = Math.min(c.box+1,5);
+    else if(rate==='easy') newBox = Math.min(c.box+2,5);
+    var nextReview = addDaysISO(TODAY, BOX_INTERVALS[newBox]);
+    if(db){
+      db.collection('cards').doc(c.id).update({ box:newBox, nextReview:nextReview }).catch(function(){});
+    }
+    touchStreak(true);
+    session.reviewed++;
+    session.index++;
+    if(session.index >= session.queue.length){
+      document.getElementById('studyProgress').style.width='100%';
+      setTimeout(endStudy, 350);
+    } else {
+      showCurrentCard();
+    }
+  });
+
+  // ---------- streak ----------
+  function touchStreak(isReview){
+    if(!statsDocRef) return;
+    var today = TODAY;
+    if(stats.lastActiveDate === today){
+      if(isReview) statsDocRef.update({ totalReviews:(stats.totalReviews||0)+1 }).catch(function(){});
+      return;
+    }
+    var yesterday = addDaysISO(today, -1);
+    var newStreak = (stats.lastActiveDate === yesterday) ? (stats.streak||0)+1 : 1;
+    var patch = { streak:newStreak, lastActiveDate:today };
+    if(isReview) patch.totalReviews = (stats.totalReviews||0)+1;
+    statsDocRef.update(patch).catch(function(){});
+  }
+
+  // ---------- rendering: cronograma ----------
+  function renderSchedule(){
+    var byWeek = {};
+    Object.keys(scheduleById).sort().forEach(function(iso){
+      var e = scheduleById[iso];
+      byWeek[e.week] = byWeek[e.week] || [];
+      byWeek[e.week].push(Object.assign({date:iso}, e));
+    });
+    var html = '';
+    Object.keys(byWeek).sort(function(a,b){return a-b;}).forEach(function(w){
+      var rows = byWeek[w];
+      var first = rows[0].date, last = rows[rows.length-1].date;
+      html += '<div class="week-block"><p class="week-title">Semana '+w+' · '+first.slice(8,10)+'/'+first.slice(5,7)+'–'+last.slice(8,10)+'/'+last.slice(5,7)+'</p>';
+      rows.forEach(function(r){
+        var classes = 'day-row' + (r.date===TODAY?' is-today':'') + (r.done?' is-done':'');
+        var quicklink = '';
+        if(['class','real_english','mixed'].indexOf(r.type)>=0){
+          quicklink = '<button class="quicklink" data-ql="speaking">Praticar em Speaking →</button>';
+        } else if(r.type==='review'){
+          quicklink = '<button class="quicklink" data-ql="erros">Ver Meus Erros →</button>';
+        }
+        html += '<div class="'+classes+'">' +
+          '<button class="day-check'+(r.done?' checked':'')+'" data-date="'+r.date+'" aria-label="marcar concluído">'+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg>'+
+          '</button>' +
+          '<div class="day-info"><div class="day-date">'+fmtDate(r.date)+'</div><div class="day-label">'+r.label+'</div>'+quicklink+'</div>' +
+        '</div>';
+      });
+      html += '</div>';
+    });
+    document.getElementById('scheduleList').innerHTML = html || '<p class="view-sub">Cronograma ainda não carregado.</p>';
+    document.querySelectorAll('.day-check').forEach(function(btn){
+      btn.addEventListener('click', function(){ toggleScheduleDone(btn.dataset.date); });
+    });
+    document.querySelectorAll('.quicklink[data-ql]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(btn.dataset.ql==='speaking'){ goToView('praticar'); switchSub('praticarSubnav','speaking'); }
+        else if(btn.dataset.ql==='erros'){ goToView('erros'); }
+      });
+    });
+  }
+
+  // ---------- rendering: progresso ----------
+  function renderProgress(){
+    var cards = Object.keys(cardsById).map(function(id){return cardsById[id];});
+    var mastered = cards.filter(function(c){return c.box>=5;}).length;
+    var scheduleEntries = Object.keys(scheduleById).map(function(k){return scheduleById[k];});
+    var studyDays = scheduleEntries.filter(function(e){return ['class','real_english','review','mixed'].indexOf(e.type)>=0;});
+    var studyDaysDone = studyDays.filter(function(e){return e.done;}).length;
+
+    document.getElementById('streakNum').textContent = stats.streak||0;
+
+    document.getElementById('statTiles').innerHTML =
+      '<div class="stat-tile"><div class="num">'+(stats.streak||0)+'</div><div class="lbl">dias seguidos</div></div>' +
+      '<div class="stat-tile"><div class="num">'+(stats.totalReviews||0)+'</div><div class="lbl">revisões totais</div></div>' +
+      '<div class="stat-tile"><div class="num">'+mastered+' / '+cards.length+'</div><div class="lbl">cartões dominados</div></div>' +
+      '<div class="stat-tile"><div class="num">'+studyDaysDone+' / '+studyDays.length+'</div><div class="lbl">sessões concluídas</div></div>';
+
+    var byWeek = {};
+    scheduleEntries.forEach(function(e){
+      byWeek[e.week] = byWeek[e.week] || {done:0,total:0};
+      if(['class','real_english','review','mixed'].indexOf(e.type)>=0){
+        byWeek[e.week].total++;
+        if(e.done) byWeek[e.week].done++;
+      }
+    });
+    var barsHtml = Object.keys(byWeek).sort(function(a,b){return a-b;}).map(function(w){
+      var b = byWeek[w];
+      var pct = b.total ? Math.round((b.done/b.total)*100) : 0;
+      return '<div class="bar-row"><span class="bar-label">Semana '+w+'</span>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;"></div></div>' +
+        '<span class="bar-num">'+b.done+'/'+b.total+'</span></div>';
+    }).join('');
+    document.getElementById('weekBars').innerHTML = barsHtml;
+  }
+
+  function renderAll(){
+    renderHoje();
+    renderDecks();
+    renderSchedule();
+    renderProgress();
+    renderSkillsProgress();
+    renderMistakes();
+  }
+
+  // ---------- activity log ----------
+  function logActivity(type, durationMin, score, meta){
+    touchStreak(false);
+    var entry = { type:type, date:TODAY, durationMin:durationMin||0, score:(score==null?null:score), meta:meta||{}, createdAt: Date.now() };
+    if(db){
+      db.collection('activities').add(entry).catch(function(){});
+    }
+    // otimista: refletir na hora, o snapshot do servidor reconcilia em seguida
+    activitiesToday.push(entry);
+    activitiesRecent.push(entry);
+    renderHoje();
+    renderSkillsProgress();
+  }
+
+  // ---------- skills / nível ----------
+  function computeSkills(){
+    var speakingActs = activitiesRecent.filter(function(a){ return a.type==='speaking' && typeof a.score==='number'; });
+    var listeningActs = activitiesRecent.filter(function(a){ return a.type==='listening' && typeof a.score==='number'; });
+    var grammarVals = speakingActs.map(function(a){ return a.meta && typeof a.meta.grammar==='number' ? a.meta.grammar : null; }).filter(function(v){ return v!=null; });
+    var speakingScore = speakingActs.length ? Math.round(speakingActs.reduce(function(s,a){return s+a.score;},0)/speakingActs.length) : null;
+    var listeningScore = listeningActs.length ? Math.round(listeningActs.reduce(function(s,a){return s+a.score;},0)/listeningActs.length) : null;
+    var grammarScore = grammarVals.length ? Math.round(grammarVals.reduce(function(s,v){return s+v;},0)/grammarVals.length) : null;
+    var cards = Object.keys(cardsById).map(function(id){return cardsById[id];});
+    var vocabScore = cards.length ? Math.round(cards.filter(function(c){return c.box>=3;}).length / cards.length * 100) : null;
+    return {
+      speaking:{ score:speakingScore, n:speakingActs.length },
+      listening:{ score:listeningScore, n:listeningActs.length },
+      grammar:{ score:grammarScore, n:grammarVals.length },
+      vocabulary:{ score:vocabScore, n:cards.length },
+      reading:{ score:null, n:0 },
+      writing:{ score:null, n:0 }
+    };
+  }
+  function scoreToLevel(score){
+    if(score==null) return null;
+    if(score<35) return 'A1';
+    if(score<55) return 'A2';
+    if(score<70) return 'B1';
+    if(score<85) return 'B2';
+    return 'C1';
+  }
+  function topMistakeCategory(){
+    var counts = {};
+    Object.keys(mistakesById).forEach(function(id){
+      var m = mistakesById[id];
+      counts[m.category] = (counts[m.category]||0) + (m.count||1);
+    });
+    var keys = Object.keys(counts);
+    if(!keys.length) return null;
+    keys.sort(function(a,b){ return counts[b]-counts[a]; });
+    return keys[0];
+  }
+  var SKILL_ORDER = ['speaking','listening','reading','writing','vocabulary','grammar'];
+  function renderSkillsProgress(){
+    var skillGrid = document.getElementById('skillGrid');
+    if(!skillGrid) return;
+    var skills = computeSkills();
+    var withData = SKILL_ORDER.filter(function(k){ return skills[k].score!=null; });
+
+    var levelEl = document.getElementById('englishLevelNum');
+    var capEl = document.getElementById('englishLevelCap');
+    if(withData.length===0){
+      levelEl.textContent = '—';
+      capEl.textContent = 'Ainda não avaliado — pratique Speaking, Listening ou Vocabulary pra começarmos a estimar.';
+    } else {
+      var avg = Math.round(withData.reduce(function(s,k){return s+skills[k].score;},0)/withData.length);
+      levelEl.textContent = scoreToLevel(avg);
+      var totalN = withData.reduce(function(s,k){return s+skills[k].n;},0);
+      capEl.textContent = 'Estimativa inicial baseada em '+totalN+' atividade'+(totalN===1?'':'s')+' registrada'+(totalN===1?'':'s')+' — não é uma certificação oficial.';
+    }
+
+    skillGrid.innerHTML = SKILL_ORDER.map(function(k){
+      var s = skills[k];
+      var lvl = scoreToLevel(s.score);
+      return '<div class="skill-tile"><span class="sk-name">'+SKILL_LABEL[k]+'</span>' +
+        (lvl ? '<span class="sk-level">'+lvl+'</span>' : '<span class="sk-level na">Ainda não avaliado</span>') +
+        (lvl ? '<span class="mistake-count" style="display:block;">'+s.n+' registro'+(s.n===1?'':'s')+'</span>' : '') +
+      '</div>';
+    }).join('');
+
+    var insightEl = document.getElementById('insightRow');
+    var nextGoalCard = document.getElementById('nextGoalCard');
+    if(withData.length < 2){
+      insightEl.innerHTML = '';
+      nextGoalCard.style.display = 'none';
+    } else {
+      var sorted = withData.slice().sort(function(a,b){ return skills[b].score - skills[a].score; });
+      var best = sorted[0], worst = sorted[sorted.length-1];
+      insightEl.innerHTML =
+        '<div class="insight-tile"><span class="in-lbl">Ponto forte</span><br><span class="in-val">'+SKILL_LABEL[best]+'</span></div>' +
+        '<div class="insight-tile"><span class="in-lbl">Ponto a melhorar</span><br><span class="in-val">'+SKILL_LABEL[worst]+'</span></div>';
+      nextGoalCard.style.display = 'block';
+      document.getElementById('nextGoalText').textContent = 'Foco em '+SKILL_LABEL[worst]+' nos próximos dias.';
+      var topCat = topMistakeCategory();
+      var list = ['Pratique '+SKILL_LABEL[worst]+' na aba Praticar, mesmo que por poucos minutos por dia.'];
+      if(topCat) list.push('Revise seus erros de '+CATEGORY_LABEL[topCat]+' em Meus Erros.');
+      document.getElementById('nextGoalList').innerHTML = list.map(function(t){ return '<li>'+t+'</li>'; }).join('');
+    }
+  }
+
+  // ---------- Foco: timer Pomodoro ----------
+  (function(){
+    var audioCtx = null;
+    var workMinutes = 25;
+    var mode = 'focus'; // 'focus' | 'break'
+    var cycle = 1; // 1..4
+    var remaining = workMinutes*60;
+    var playing = false;
+    var tickHandle = null;
+    var SHORT_BREAK = 5, LONG_BREAK = 15;
+
+    function ensureCtx(){
+      if(!audioCtx){
+        var AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+      }
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+    function chime(){
+      try{
+        var ctx = ensureCtx();
+        [880, 1108].forEach(function(freq, i){
+          var o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = 'sine'; o.frequency.value = freq;
+          g.gain.value = 0.0001;
+          o.connect(g); g.connect(ctx.destination);
+          var t0 = ctx.currentTime + i*0.16;
+          g.gain.exponentialRampToValueAtTime(0.14, t0+0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, t0+0.5);
+          o.start(t0); o.stop(t0+0.55);
+        });
+      }catch(e){}
+    }
+
+    function updateFace(){
+      var m = Math.floor(remaining/60), s = remaining%60;
+      document.getElementById('timerFace').textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    }
+    function updateModeUI(){
+      var pill = document.getElementById('modePill');
+      var hint = document.getElementById('timerHint');
+      document.getElementById('cycleLabel').textContent = 'Ciclo '+cycle+'/4';
+      document.querySelectorAll('#timerPresets .preset-btn').forEach(function(b){
+        b.disabled = mode !== 'focus';
+      });
+      if(mode === 'focus'){
+        pill.textContent = 'Foco';
+        pill.classList.remove('is-break');
+        hint.textContent = 'Pausa curta de '+SHORT_BREAK+' min depois — pausa longa de '+LONG_BREAK+' min a cada 4 ciclos.';
+      } else {
+        pill.textContent = 'Pausa';
+        pill.classList.add('is-break');
+        hint.textContent = cycle === 4 ? 'Pausa longa — daqui a pouco começa um novo conjunto de 4 ciclos.' : 'Pausa curta — volta pro foco em seguida.';
+      }
+    }
+    function setPreset(min){
+      workMinutes = min;
+      document.querySelectorAll('#timerPresets .preset-btn').forEach(function(b){
+        b.classList.toggle('active', parseInt(b.dataset.min,10) === min);
+      });
+      if(mode === 'focus' && !playing){
+        remaining = workMinutes*60;
+        updateFace();
+      }
+    }
+    document.getElementById('timerPresets').addEventListener('click', function(e){
+      var btn = e.target.closest('.preset-btn');
+      if(!btn || btn.disabled) return;
+      setPreset(parseInt(btn.dataset.min,10));
+    });
+
+    function tick(){
+      remaining--;
+      updateFace();
+      if(remaining <= 0) advance();
+    }
+    function play(){
+      playing = true;
+      document.getElementById('timerToggle').textContent = 'Pausar';
+      tickHandle = setInterval(tick, 1000);
+    }
+    function pause(){
+      playing = false;
+      document.getElementById('timerToggle').textContent = 'Continuar';
+      clearInterval(tickHandle);
+    }
+    function advance(){
+      clearInterval(tickHandle);
+      chime();
+      if(mode === 'focus'){
+        mode = 'break';
+        remaining = (cycle === 4 ? LONG_BREAK : SHORT_BREAK) * 60;
+      } else {
+        cycle = cycle === 4 ? 1 : cycle+1;
+        mode = 'focus';
+        remaining = workMinutes*60;
+      }
+      updateModeUI();
+      updateFace();
+      tickHandle = setInterval(tick, 1000);
+    }
+    document.getElementById('timerToggle').addEventListener('click', function(){
+      if(playing) pause(); else play();
+    });
+    document.getElementById('timerReset').addEventListener('click', function(){
+      pause();
+      mode = 'focus'; cycle = 1;
+      remaining = workMinutes*60;
+      updateModeUI();
+      updateFace();
+      document.getElementById('timerToggle').textContent = 'Começar';
+    });
+
+    updateModeUI();
+    updateFace();
+  })();
+
+  // ---------- IA: helpers ----------
+  function requireSample(){
+    if(!sampleFn){
+      alert('Este recurso de IA não está disponível nesta pré-visualização. Abra o link publicado do Recreio para usar Speaking e Listening.');
+      return false;
+    }
+    return true;
+  }
+  function sampleErrorMessage(err){
+    var code = err && err.code;
+    if(code==='not_granted') return 'Você precisa permitir o uso de IA pra essa função funcionar — tenta de novo.';
+    if(code==='rate_limited') return 'Muitas requisições agora — espera um instante e tenta de novo.';
+    if(code==='session_expired') return 'Sua sessão de IA expirou — recarrega a página.';
+    if(code==='prompt_too_large') return 'Essa conversa ficou grande demais — encerra e começa uma nova.';
+    if(code==='sampling_disabled') return 'O uso de IA está desativado nesta conta.';
+    if(code==='refused') return 'A IA não conseguiu responder a isso — tenta reformular.';
+    if(code==='empty_completion' || code==='invalid_json') return 'A resposta veio incompleta — tenta de novo.';
+    return 'Não consegui falar com a IA agora — tenta de novo em instantes.';
+  }
+
+  // ---------- Speaking ----------
+  function addChatBubble(role, text, isTyping){
+    var wrap = document.getElementById('chatMessages');
+    var row = document.createElement('div');
+    row.className = 'msg-row role-'+role+(isTyping?' is-typing':'');
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    wrap.appendChild(row);
+    wrap.scrollTop = wrap.scrollHeight;
+    return row;
+  }
+  function startSpeaking(){
+    if(!requireSample()) return;
+    speakState.turns = [];
+    speakState.startedAt = Date.now();
+    document.getElementById('speakingSetup').style.display = 'none';
+    document.getElementById('speakingResult').style.display = 'none';
+    document.getElementById('speakingResult').innerHTML = '';
+    document.getElementById('chatMessages').innerHTML = '';
+    document.getElementById('speakingChatArea').style.display = 'block';
+    var instruction = 'You are role-playing as a friendly English conversation partner helping a Brazilian English learner practice speaking. '+
+      'Learner level: '+speakState.level+'. Context/scenario: '+speakState.context+'. '+
+      'Start the conversation with a short, natural opening line appropriate to this scenario and level (1-2 sentences). '+
+      'Keep every message short and conversational (max 2-3 sentences). Do NOT correct the learner\'s mistakes during the conversation — just respond naturally, like a real person would. '+
+      'Reply with ONLY your message in the conversation, nothing else.';
+    speakState.turns.push({ role:'user', content: instruction });
+    var typingRow = addChatBubble('assistant', 'Digitando...', true);
+    sampleFn(speakState.turns, { modelTier:'quick' }).then(function(res){
+      typingRow.remove();
+      speakState.turns.push({ role:'assistant', content: res.text });
+      addChatBubble('assistant', res.text);
+    }).catch(function(err){
+      typingRow.remove();
+      addChatBubble('assistant', sampleErrorMessage(err));
+    });
+  }
+  document.getElementById('speakStartBtn').addEventListener('click', startSpeaking);
+
+  function sendSpeakMessage(){
+    var input = document.getElementById('speakInput');
+    var text = input.value.trim();
+    if(!text || !sampleFn) return;
+    addChatBubble('user', text);
+    speakState.turns.push({ role:'user', content:text });
+    input.value = '';
+    document.getElementById('speakSendBtn').disabled = true;
+    var typingRow = addChatBubble('assistant', 'Digitando...', true);
+    sampleFn(speakState.turns, { modelTier:'quick' }).then(function(res){
+      typingRow.remove();
+      speakState.turns.push({ role:'assistant', content: res.text });
+      addChatBubble('assistant', res.text);
+      document.getElementById('speakSendBtn').disabled = false;
+    }).catch(function(err){
+      typingRow.remove();
+      addChatBubble('assistant', sampleErrorMessage(err));
+      document.getElementById('speakSendBtn').disabled = false;
+    });
+  }
+  document.getElementById('speakSendBtn').addEventListener('click', sendSpeakMessage);
+  document.getElementById('speakInput').addEventListener('keydown', function(e){
+    if(e.key==='Enter'){ e.preventDefault(); sendSpeakMessage(); }
+  });
+
+  function endSpeaking(){
+    if(!requireSample()) return;
+    document.getElementById('speakingChatArea').style.display='none';
+    var resultEl = document.getElementById('speakingResult');
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = '<div class="skel" style="height:120px;"></div>';
+
+    var displayTranscript = speakState.turns.slice(1).map(function(t){
+      return (t.role==='user'?'Learner: ':'Partner: ')+t.content;
+    }).join('\n');
+
+    var gradePrompt = 'Below is a transcript of an English conversation practice session between an English partner (Partner) and a Brazilian English learner (Learner), level '+speakState.level+', scenario: '+speakState.context+'.\n\n'+
+      displayTranscript+'\n\n'+
+      'Evaluate ONLY the Learner\'s messages. Reply with ONLY a JSON object, no markdown fences, no extra text, in this exact shape:\n'+
+      '{"overall":0-100,"fluency":0-100,"vocabulary":0-100,"grammar":0-100,"naturalness":0-100,'+
+      '"mistakes":[{"category":"grammar|vocabulary|prepositions|word_choice|naturalness","wrong":"...","correct":"...","explanation":"..."}],'+
+      '"suggestions":[{"original":"...","better":"..."}]}\n'+
+      'Use empty arrays if there is nothing notable. Base every score on the Learner\'s actual messages, calibrated to a '+speakState.level+' learner — be encouraging but honest. Keep explanations short (one sentence, in Portuguese).';
+
+    sampleFn.json(gradePrompt, { modelTier:'complex' }).then(function(result){
+      renderSpeakingResult(result);
+      var durationMin = Math.max(1, Math.round((Date.now()-speakState.startedAt)/60000));
+      logActivity('speaking', durationMin, result.overall, { context:speakState.context, level:speakState.level, grammar:result.grammar });
+    }).catch(function(err){
+      resultEl.innerHTML = '<p class="view-sub">'+escapeHtml(sampleErrorMessage(err))+'</p><button class="btn btn-ghost btn-full" id="speakRetryBtn" style="margin-top:10px;">Tentar de novo</button>';
+      var retryBtn = document.getElementById('speakRetryBtn');
+      if(retryBtn) retryBtn.addEventListener('click', endSpeaking);
+    });
+  }
+  document.getElementById('speakEndBtn').addEventListener('click', endSpeaking);
+
+  function renderSpeakingResult(result){
+    var resultEl = document.getElementById('speakingResult');
+    var subs = [
+      {k:'fluency', label:'Fluência'},
+      {k:'vocabulary', label:'Vocabulário'},
+      {k:'grammar', label:'Gramática'},
+      {k:'naturalness', label:'Naturalidade'}
+    ];
+    var html = '<div class="score-hero"><span class="score-num">'+(result.overall||0)+'</span><span class="score-lbl">pontuação geral</span></div>';
+    html += subs.map(function(s){
+      var v = result[s.k]||0;
+      return '<div class="subscore-row"><span class="ss-label">'+s.label+'</span><div class="ss-track"><div class="ss-fill" style="width:'+v+'%;"></div></div><span class="ss-num">'+v+'</span></div>';
+    }).join('');
+    html += '<p class="view-sub" style="margin-top:6px;">Pronúncia ainda não é avaliada nesta versão em texto — em breve, com voz.</p>';
+
+    var mistakes = result.mistakes || [];
+    if(mistakes.length){
+      html += '<p class="field-label">Erros encontrados</p>';
+      html += mistakes.map(function(m, i){
+        return '<div class="mistake-item">' +
+          '<span class="mistake-cat">'+(CATEGORY_LABEL[m.category]||m.category)+'</span>' +
+          '<div class="mistake-wrong">✗ '+escapeHtml(m.wrong)+'</div>' +
+          '<div class="mistake-correct">✓ '+escapeHtml(m.correct)+'</div>' +
+          '<div class="mistake-explain">'+escapeHtml(m.explanation||'')+'</div>' +
+          '<button class="btn btn-ghost" data-add-mistake="'+i+'" style="margin-top:8px; padding:6px 12px; font-size:.74rem;">+ Adicionar à revisão</button>' +
+        '</div>';
+      }).join('');
+    }
+
+    var suggestions = result.suggestions || [];
+    if(suggestions.length){
+      html += '<p class="field-label">Formas mais naturais</p>';
+      html += suggestions.map(function(s){
+        return '<div class="mistake-item"><div class="mistake-wrong">'+escapeHtml(s.original)+'</div><div class="mistake-correct">'+escapeHtml(s.better)+'</div></div>';
+      }).join('');
+    }
+
+    html += '<button class="btn btn-primary btn-full" id="speakAgainBtn" style="margin-top:16px;">Nova conversa</button>';
+
+    resultEl.innerHTML = html;
+    resultEl.querySelectorAll('[data-add-mistake]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var m = mistakes[parseInt(btn.dataset.addMistake,10)];
+        addMistake(m, 'speaking');
+        btn.textContent = 'Adicionado ✓';
+        btn.disabled = true;
+      });
+    });
+    var againBtn = document.getElementById('speakAgainBtn');
+    if(againBtn) againBtn.addEventListener('click', resetSpeaking);
+  }
+  function resetSpeaking(){
+    document.getElementById('speakingResult').style.display='none';
+    document.getElementById('speakingChatArea').style.display='none';
+    document.getElementById('speakingSetup').style.display='block';
+  }
+  function addMistake(m, source){
+    if(!db || !m) return;
+    var id = slugify((m.category||'geral')+'-'+m.wrong);
+    var existing = mistakesById[id];
+    if(existing){
+      db.collection('mistakes').doc(id).update({ count:(existing.count||1)+1, lastSeen:TODAY }).catch(function(){});
+    } else {
+      db.collection('mistakes').doc(id).set({
+        category:m.category||'naturalness', wrong:m.wrong||'', correct:m.correct||'', explanation:m.explanation||'',
+        count:1, lastSeen:TODAY, source:source||'speaking'
+      }).catch(function(){});
+    }
+  }
+
+  // ---------- Listening ----------
+  function generateListening(){
+    if(!requireSample()) return;
+    var area = document.getElementById('listeningArea');
+    document.getElementById('listeningSetup').style.display = 'none';
+    area.style.display = 'block';
+    area.innerHTML = '<div class="skel" style="height:200px;"></div>';
+    var prompt = 'Create a short English listening-practice exercise for a Brazilian English learner, level '+listenState.level+', in the context/scenario: '+listenState.context+'. '+
+      'Reply with ONLY a JSON object, no markdown fences, in this exact shape:\n'+
+      '{"passage":"an 80-140 word natural spoken-style English passage or short dialogue appropriate to the level and scenario",'+
+      '"vocabulary":[{"word":"...","translation":"Portuguese translation","example":"an example sentence using the word, from or inspired by the passage"}],'+
+      '"questions":[{"q":"a comprehension question in English","options":["4 short answer options"],"correctIndex":0}]}\n'+
+      'Include 4-6 vocabulary items (key words from the passage) and 3 comprehension questions. Keep language natural, not textbook-stiff.';
+    sampleFn.json(prompt, { modelTier:'complex' }).then(function(result){
+      listenState.exercise = result;
+      listenState.stage = 1;
+      listenState.answers = {};
+      listenState.startedAt = Date.now();
+      renderListeningStage();
+    }).catch(function(err){
+      area.innerHTML = '<p class="view-sub">'+escapeHtml(sampleErrorMessage(err))+'</p><button class="btn btn-ghost btn-full" id="listenRetryBtn" style="margin-top:10px;">Tentar de novo</button>';
+      var retryBtn = document.getElementById('listenRetryBtn');
+      if(retryBtn) retryBtn.addEventListener('click', generateListening);
+    });
+  }
+  document.getElementById('listenGenBtn').addEventListener('click', generateListening);
+
+  var LISTEN_STAGE_LABELS = ['Áudio', 'Legenda', 'Vocabulário', 'Perguntas'];
+  function renderListeningStage(){
+    var area = document.getElementById('listeningArea');
+    var ex = listenState.exercise;
+    if(!ex) return;
+    var stage = listenState.stage;
+    var dots = LISTEN_STAGE_LABELS.map(function(_, i){
+      return '<div class="stage-dot'+(i < stage ? ' done':'')+'"></div>';
+    }).join('');
+
+    var body = '';
+    if(stage===1){
+      body = '<p class="view-sub" style="margin-bottom:14px;">Etapa 1 de 4 — só o áudio, sem legenda. Ouça quantas vezes quiser.</p>' +
+        '<button class="play-btn" id="listenPlayBtn" type="button" aria-label="tocar áudio">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>' +
+        '</button>';
+    } else if(stage===2){
+      body = '<p class="view-sub" style="margin-bottom:14px;">Etapa 2 de 4 — agora com legenda em inglês.</p>' +
+        '<button class="play-btn" id="listenPlayBtn" type="button" aria-label="tocar áudio">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>' +
+        '</button>' +
+        '<p class="passage-text">'+escapeHtml(ex.passage)+'</p>';
+    } else if(stage===3){
+      var vocab = ex.vocabulary || [];
+      body = '<p class="view-sub" style="margin-bottom:6px;">Etapa 3 de 4 — vocabulário-chave da passagem.</p>' +
+        vocab.map(function(v,i){
+          return '<div class="vocab-item"><div><div style="font-weight:700; font-size:.88rem;">'+escapeHtml(v.word)+'</div>' +
+            '<div class="view-sub" style="margin:2px 0 0;">'+escapeHtml(v.translation)+' — <em>'+escapeHtml(v.example||'')+'</em></div></div>' +
+            '<div style="display:flex; gap:6px; flex-shrink:0;">' +
+            '<button class="icon-btn" data-vocab-play="'+i+'" aria-label="ouvir" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 5V4L8 9H4z"/></svg></button>' +
+            '<button class="icon-btn" data-vocab-add="'+i+'" aria-label="adicionar aos flashcards" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>' +
+            '</div></div>';
+        }).join('');
+    } else if(stage===4){
+      body = renderListeningQuestionsHtml();
+    }
+
+    area.innerHTML = '<div class="stage-track">'+dots+'</div>' + body +
+      (stage<4 ? '<button class="btn btn-primary btn-full" id="listenNextBtn" style="margin-top:16px;">Próxima etapa →</button>' : '');
+
+    if(stage===1 || stage===2){
+      var playBtn = document.getElementById('listenPlayBtn');
+      if(playBtn) playBtn.addEventListener('click', function(){ speakEnglish(ex.passage, 0.95); });
+    }
+    if(stage===3){
+      area.querySelectorAll('[data-vocab-play]').forEach(function(btn){
+        btn.addEventListener('click', function(){ speakEnglish(ex.vocabulary[parseInt(btn.dataset.vocabPlay,10)].word); });
+      });
+      area.querySelectorAll('[data-vocab-add]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          addCardFromActivity(ex.vocabulary[parseInt(btn.dataset.vocabAdd,10)]);
+          btn.disabled = true;
+          btn.innerHTML = '✓';
+        });
+      });
+    }
+    if(stage===4){
+      wireListeningQuestions();
+    }
+    var nextBtn = document.getElementById('listenNextBtn');
+    if(nextBtn) nextBtn.addEventListener('click', function(){ listenState.stage++; renderListeningStage(); });
+  }
+  function renderListeningQuestionsHtml(){
+    var ex = listenState.exercise;
+    var qs = ex.questions || [];
+    return '<p class="view-sub" style="margin-bottom:6px;">Etapa 4 de 4 — perguntas de compreensão.</p>' +
+      qs.map(function(q,qi){
+        return '<div class="q-item"><p style="font-weight:600; font-size:.88rem; margin-bottom:8px;">'+escapeHtml(q.q)+'</p>' +
+          (q.options||[]).map(function(opt,oi){
+            return '<div class="q-option" data-q="'+qi+'" data-opt="'+oi+'">'+escapeHtml(opt)+'</div>';
+          }).join('') +
+        '</div>';
+      }).join('') +
+      '<button class="btn btn-primary btn-full" id="listenCheckBtn" style="margin-top:12px;">Verificar respostas</button>';
+  }
+  function wireListeningQuestions(){
+    document.querySelectorAll('.q-option').forEach(function(opt){
+      opt.addEventListener('click', function(){
+        var qi = opt.dataset.q;
+        document.querySelectorAll('.q-option[data-q="'+qi+'"]').forEach(function(o){ o.classList.remove('selected'); });
+        opt.classList.add('selected');
+        listenState.answers[qi] = parseInt(opt.dataset.opt,10);
+      });
+    });
+    var checkBtn = document.getElementById('listenCheckBtn');
+    if(checkBtn) checkBtn.addEventListener('click', gradeListening);
+  }
+  function gradeListening(){
+    var ex = listenState.exercise;
+    var qs = ex.questions || [];
+    var correct = 0;
+    qs.forEach(function(q,qi){
+      var chosen = listenState.answers[qi];
+      var opts = document.querySelectorAll('.q-option[data-q="'+qi+'"]');
+      opts.forEach(function(o){
+        var oi = parseInt(o.dataset.opt,10);
+        if(oi===q.correctIndex){ o.classList.add('correct'); }
+        else if(oi===chosen){ o.classList.add('incorrect'); }
+      });
+      if(chosen===q.correctIndex) correct++;
+    });
+    var score = qs.length ? Math.round((correct/qs.length)*100) : 0;
+    var checkBtn = document.getElementById('listenCheckBtn');
+    if(checkBtn) checkBtn.style.display = 'none';
+    var area = document.getElementById('listeningArea');
+    area.insertAdjacentHTML('beforeend',
+      '<div class="score-hero" style="margin-top:16px;"><span class="score-num">'+correct+'/'+qs.length+'</span><span class="score-lbl">respostas certas</span></div>' +
+      '<button class="btn btn-primary btn-full" id="listenAgainBtn" style="margin-top:12px;">Novo exercício</button>'
+    );
+    var againBtn = document.getElementById('listenAgainBtn');
+    if(againBtn) againBtn.addEventListener('click', resetListening);
+    var durationMin = Math.max(1, Math.round((Date.now()-listenState.startedAt)/60000));
+    logActivity('listening', durationMin, score, { context:listenState.context, level:listenState.level });
+  }
+  function resetListening(){
+    listenState.exercise = null;
+    document.getElementById('listeningArea').style.display = 'none';
+    document.getElementById('listeningArea').innerHTML = '';
+    document.getElementById('listeningSetup').style.display = 'block';
+  }
+  function addCardFromActivity(v){
+    if(!db || !v || !v.word) return;
+    db.collection('cards').add({
+      front:v.word, back:v.translation||'', example:v.example||'', deck:'listening', deckName:'Do Listening', box:0, nextReview:TODAY
+    }).catch(function(){});
+  }
+
+  // ---------- Meus Erros ----------
+  function renderMistakes(){
+    var listEl = document.getElementById('mistakesList');
+    if(!listEl) return;
+    var mistakes = Object.keys(mistakesById).map(function(id){ return Object.assign({id:id}, mistakesById[id]); });
+    if(!mistakes.length){
+      listEl.innerHTML = '<div class="empty-state"><span class="big">🌱</span><p>Nenhum erro registrado ainda. Eles aparecem aqui depois das suas sessões de Speaking e Listening.</p></div>';
+      return;
+    }
+    mistakes.sort(function(a,b){ return (b.count||1)-(a.count||1); });
+    listEl.innerHTML = mistakes.map(function(m){
+      return '<div class="mistake-item" data-mistake-id="'+m.id+'">' +
+        '<span class="mistake-cat">'+(CATEGORY_LABEL[m.category]||m.category)+'</span>' +
+        '<div class="mistake-wrong">✗ '+escapeHtml(m.wrong)+'</div>' +
+        '<div class="mistake-correct">✓ '+escapeHtml(m.correct)+'</div>' +
+        (m.explanation ? '<div class="mistake-explain">'+escapeHtml(m.explanation)+'</div>' : '') +
+        '<div class="mistake-count">visto '+(m.count||1)+'x</div>' +
+        '<button class="btn btn-ghost" data-practice="'+m.id+'" style="margin-top:8px; padding:6px 12px; font-size:.74rem;">Praticar este erro</button>' +
+        '<div class="mistake-quiz" id="quiz-'+m.id+'"></div>' +
+      '</div>';
+    }).join('');
+    listEl.querySelectorAll('[data-practice]').forEach(function(btn){
+      btn.addEventListener('click', function(){ practiceThisError(btn.dataset.practice, btn); });
+    });
+  }
+  function practiceThisError(id, btn){
+    if(!requireSample()) return;
+    var m = mistakesById[id];
+    if(!m) return;
+    var quizEl = document.getElementById('quiz-'+id);
+    quizEl.innerHTML = '<div class="skel" style="height:60px; margin-top:10px;"></div>';
+    btn.disabled = true;
+    var prompt = 'A Brazilian English learner keeps making this mistake: category "'+(m.category||'')+'", wrong form: "'+m.wrong+'", correct form: "'+m.correct+'"'+(m.explanation?', explanation: "'+m.explanation+'"':'')+'. '+
+      'Create 3 short targeted practice items to help them fix exactly this mistake (e.g. fill-in-the-blank or "correct this sentence"). '+
+      'Reply with ONLY a JSON object: {"items":[{"prompt":"the exercise text in English","answer":"the model correct answer"}]}';
+    sampleFn.json(prompt, { modelTier:'quick' }).then(function(result){
+      renderMistakeQuiz(id, result.items||[]);
+      btn.disabled = false;
+    }).catch(function(err){
+      quizEl.innerHTML = '<p class="view-sub" style="margin-top:8px;">'+escapeHtml(sampleErrorMessage(err))+'</p>';
+      btn.disabled = false;
+    });
+  }
+  function renderMistakeQuiz(id, items){
+    var quizEl = document.getElementById('quiz-'+id);
+    if(!quizEl) return;
+    quizEl.innerHTML = items.map(function(it,i){
+      return '<div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);">' +
+        '<p style="font-size:.82rem; margin-bottom:6px;">'+escapeHtml(it.prompt)+'</p>' +
+        '<button class="btn btn-ghost" data-reveal="'+id+'-'+i+'" style="padding:5px 10px; font-size:.72rem;">Ver resposta modelo</button>' +
+        '<p class="view-sub" id="answer-'+id+'-'+i+'" style="display:none; margin-top:6px;">'+escapeHtml(it.answer)+'</p>' +
+      '</div>';
+    }).join('');
+    quizEl.querySelectorAll('[data-reveal]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var target = document.getElementById('answer-'+btn.dataset.reveal);
+        if(target) target.style.display='block';
+        btn.style.display = 'none';
+      });
+    });
+  }
+
+  // ---------- plano diário automático ----------
+  function buildTodayPlan(){
+    var goal = settings.dailyGoalMinutes || 30;
+    var due = dueCards().length;
+    var skills = computeSkills();
+    var vocabMin = due>0 ? Math.min(15, Math.max(5, Math.ceil(due/2))) : 0;
+    var remaining = Math.max(10, goal - vocabMin);
+    var sScore = skills.speaking.score, lScore = skills.listening.score;
+    var sMin, reasonS, reasonL;
+    if(sScore==null && lScore==null){
+      sMin = Math.round(remaining*0.6);
+      reasonS = 'Ainda não temos dados sobre sua fala — vamos começar por aqui hoje.';
+      reasonL = 'Complementa a prática oral com escuta ativa.';
+    } else {
+      var sv = sScore==null ? 50 : sScore;
+      var lv = lScore==null ? 50 : lScore;
+      if(sv <= lv){
+        sMin = Math.round(remaining*0.6);
+        reasonS = 'Speaking está mais atrás que Listening no momento — o foco de hoje é aqui.';
+        reasonL = 'Manutenção do que já está indo bem em Listening.';
+      } else {
+        sMin = Math.round(remaining*0.4);
+        reasonL = 'Listening está mais atrás que Speaking no momento — o foco de hoje é aqui.';
+        reasonS = 'Manutenção do que já está indo bem em Speaking.';
+      }
+    }
+    var lMin = Math.max(5, remaining - sMin);
+    sMin = Math.max(5, remaining - lMin);
+
+    var blocks = [];
+    if(vocabMin>0) blocks.push({ type:'vocabulary', minutes:vocabMin, reason: due+' cartão'+(due===1?'':'s')+' esperando revisão — reforçar agora evita esquecer de vez.' });
+    blocks.push({ type:'speaking', minutes:sMin, reason:reasonS });
+    blocks.push({ type:'listening', minutes:lMin, reason:reasonL });
+    return { date:TODAY, blocks:blocks, goalMinutes:goal, generatedAt:Date.now() };
+  }
+  var cardsLoaded=false, activitiesLoaded=false, todayPlanLoaded=false;
+  function maybeGeneratePlan(){
+    if(!db || !todayPlanRef || todayPlanDoc || planGenerationInFlight) return;
+    if(!cardsLoaded || !activitiesLoaded || !todayPlanLoaded) return;
+    planGenerationInFlight = true;
+    var plan = buildTodayPlan();
+    todayPlanRef.set(plan).catch(function(){}).then(function(){ planGenerationInFlight = false; });
+  }
+
+  // ---------- local fallback db (used outside the Claude Artifact runtime, e.g. Live Server) ----------
+  function makeLocalDb(){
+    var STORAGE_KEY = 'recreio_local_db_v1';
+    var data = { collections:{}, docs:{} };
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw) data = JSON.parse(raw);
+    } catch(e){}
+    data.collections = data.collections || {};
+    data.docs = data.docs || {};
+
+    var listeners = { collections:{}, docs:{} };
+
+    function persist(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){} }
+    function uid(){ return 'l'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+    function notifyCollection(name){ (listeners.collections[name]||[]).slice().forEach(function(fn){ fn(); }); }
+    function notifyDoc(path){ (listeners.docs[path]||[]).slice().forEach(function(fn){ fn(); }); }
+
+    function collectionDocs(name){
+      var col = data.collections[name] || {};
+      return Object.keys(col).map(function(id){ return { id:id, _data:col[id] }; });
+    }
+    function buildSnapshot(docsArr){
+      return { docs: docsArr.map(function(d){ return { id:d.id, data:function(){ return d._data; } }; }) };
+    }
+    function matches(v, op, target){
+      switch(op){
+        case '==': return v === target;
+        case '!=': return v !== target;
+        case '<': return v < target;
+        case '<=': return v <= target;
+        case '>': return v > target;
+        case '>=': return v >= target;
+        default: return true;
+      }
+    }
+    function makeQuery(name, filters, order, limitN){
+      return {
+        where: function(field, op, value){ return makeQuery(name, filters.concat([{field:field,op:op,value:value}]), order, limitN); },
+        orderBy: function(field, dir){ return makeQuery(name, filters, {field:field, dir:dir||'asc'}, limitN); },
+        limit: function(n){ return makeQuery(name, filters, order, n); },
+        doc: function(id){ return docRef(name, id); },
+        add: function(val){
+          var id = uid();
+          data.collections[name] = data.collections[name] || {};
+          data.collections[name][id] = Object.assign({ createdAt:Date.now() }, val);
+          persist(); notifyCollection(name);
+          return Promise.resolve(docRef(name, id));
+        },
+        onSnapshot: function(cb){
+          function emit(){
+            var docs = collectionDocs(name);
+            filters.forEach(function(f){ docs = docs.filter(function(d){ return matches(d._data[f.field], f.op, f.value); }); });
+            if(order){
+              docs.sort(function(a,b){
+                var av=a._data[order.field], bv=b._data[order.field];
+                var r = av<bv?-1:(av>bv?1:0);
+                return order.dir==='desc' ? -r : r;
+              });
+            }
+            if(limitN) docs = docs.slice(0, limitN);
+            cb(buildSnapshot(docs));
+          }
+          listeners.collections[name] = listeners.collections[name] || [];
+          listeners.collections[name].push(emit);
+          emit();
+          return function unsubscribe(){
+            var arr = listeners.collections[name];
+            var i = arr.indexOf(emit);
+            if(i>-1) arr.splice(i,1);
+          };
+        }
+      };
+    }
+    function docRef(name, id){
+      return {
+        update: function(patch){
+          data.collections[name] = data.collections[name] || {};
+          data.collections[name][id] = Object.assign({}, data.collections[name][id]||{}, patch);
+          persist(); notifyCollection(name);
+          return Promise.resolve();
+        },
+        set: function(val, opts){
+          data.collections[name] = data.collections[name] || {};
+          var cur = (opts && opts.merge) ? (data.collections[name][id]||{}) : {};
+          data.collections[name][id] = Object.assign({}, cur, val);
+          persist(); notifyCollection(name);
+          return Promise.resolve();
+        }
+      };
+    }
+    function topDocRef(path){
+      return {
+        onSnapshot: function(cb){
+          function emit(){
+            var d = data.docs[path];
+            cb({ exists: !!d, data:function(){ return d; } });
+          }
+          listeners.docs[path] = listeners.docs[path] || [];
+          listeners.docs[path].push(emit);
+          emit();
+          return function unsubscribe(){
+            var arr = listeners.docs[path];
+            var i = arr.indexOf(emit);
+            if(i>-1) arr.splice(i,1);
+          };
+        },
+        set: function(val, opts){
+          var cur = (opts && opts.merge) ? (data.docs[path]||{}) : {};
+          data.docs[path] = Object.assign({}, cur, val);
+          persist(); notifyDoc(path);
+          return Promise.resolve();
+        },
+        update: function(patch){
+          data.docs[path] = Object.assign({}, data.docs[path]||{}, patch);
+          persist(); notifyDoc(path);
+          return Promise.resolve();
+        }
+      };
+    }
+
+    return {
+      collection: function(name){ return makeQuery(name, [], null, null); },
+      doc: function(path){ return topDocRef(path); }
+    };
+  }
+
+  // ---------- db wiring ----------
+  if(!window.claude || !window.claude.use){
+    window.claude = window.claude || {};
+    window.claude.use = function(name){
+      if(name === 'db') return Promise.resolve(makeLocalDb());
+      if(name === 'sample') return Promise.resolve(function(turns, opts){
+        return Promise.resolve({ text:'(Prática de fala indisponível fora do Claude — abra o app publicado para usar este recurso.)' });
+      });
+      return Promise.resolve(null);
+    };
+  }
+  {
+  window.claude.use('sample').then(function(s){
+    sampleFn = s;
+  });
+  window.claude.use('db').then(function(d){
+    if(!d){
+      document.getElementById('main').insertAdjacentHTML('afterbegin', '<div class="banner">Não foi possível conectar ao armazenamento nesta visualização — seu progresso não vai salvar agora.</div>');
+      return;
+    }
+    db = d;
+
+    db.collection('cards').onSnapshot(function(snap){
+      cardsById = {};
+      snap.docs.forEach(function(doc){
+        var data = doc.data();
+        cardsById[doc.id] = { id:doc.id, front:data.front, back:data.back, example:data.example||'', deck:data.deck, deckName:data.deckName, box:data.box||0, nextReview:data.nextReview||TODAY };
+      });
+      cardsLoaded = true;
+      renderAll();
+      maybeGeneratePlan();
+    }, function(){});
+
+    db.collection('schedule').onSnapshot(function(snap){
+      scheduleById = {};
+      snap.docs.forEach(function(doc){
+        scheduleById[doc.id] = doc.data();
+      });
+      renderAll();
+    }, function(){});
+
+    statsDocRef = db.doc('meta/stats');
+    statsDocRef.onSnapshot(function(snap){
+      if(snap.exists){
+        stats = snap.data();
+      }
+      renderAll();
+    }, function(){});
+
+    db.collection('activities').where('date','==',TODAY).onSnapshot(function(snap){
+      activitiesToday = snap.docs.map(function(doc){ return doc.data(); });
+      activitiesLoaded = true;
+      renderHoje();
+      renderSkillsProgress();
+      maybeGeneratePlan();
+    }, function(){});
+
+    db.collection('activities').orderBy('createdAt','desc').limit(200).onSnapshot(function(snap){
+      activitiesRecent = snap.docs.map(function(doc){ return doc.data(); });
+      renderSkillsProgress();
+    }, function(){});
+
+    db.collection('mistakes').onSnapshot(function(snap){
+      mistakesById = {};
+      snap.docs.forEach(function(doc){ mistakesById[doc.id] = doc.data(); });
+      renderMistakes();
+      renderSkillsProgress();
+    }, function(){});
+
+    db.doc('settings/prefs').onSnapshot(function(snap){
+      if(snap.exists){
+        settings = Object.assign({dailyGoalMinutes:30}, snap.data());
+      }
+      renderHoje();
+    }, function(){});
+
+    todayPlanRef = db.doc('todayPlan/'+TODAY);
+    todayPlanRef.onSnapshot(function(snap){
+      todayPlanDoc = snap.exists ? snap.data() : null;
+      todayPlanLoaded = true;
+      renderHoje();
+      maybeGeneratePlan();
+    }, function(){});
+  });
+  }
+
+})();
+</script>
+</body>
+</html>
